@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وجوب تعلم القراءة الصحيحة للقرآن الكريم بالتجويد</title>
+<style>
+  /* ============ التوكِنز / Design tokens ============
+     الأخضر العميق مستوحى من قبة المسجد النبوي، الذهبي من زخارف المحراب،
+     الكريمي من رخام الحرم. الزخرفة الهندسية نجمة ثمانية بسيطة تتكرر كخيط رفيع.
+  */
+  :root{
+    --green-deep:#123524;
+    --green:#1F5C42;
+    --green-mid:#2F7D57;
+    --green-soft:#DCEAE1;
+    --gold:#C9A24B;
+    --gold-light:#EAD9A0;
+    --gold-glow:#F6E9C4;
+    --cream:#FBF7EE;
+    --white:#FFFFFF;
+    --ink:#1B2A22;
+    --ink-soft:#4B5D53;
+    --shadow: 0 10px 30px rgba(18,53,36,0.12);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --font-ar-display: "Traditional Arabic","Segoe UI","Times New Roman", serif;
+    --font-ar-body: "Tahoma","Segoe UI","Geeza Pro","Arial", sans-serif;
+    --font-en-display: Georgia, "Times New Roman", serif;
+    --font-en-body: "Segoe UI", Arial, Helvetica, sans-serif;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+
+  html,body{margin:0; padding:0;}
+
+  body{
+    background:
+      radial-gradient(circle at 15% 8%, rgba(201,162,75,0.10), transparent 40%),
+      radial-gradient(circle at 90% 90%, rgba(31,92,66,0.10), transparent 45%),
+      var(--cream);
+    font-family: var(--font-ar-body);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  body.lang-en{
+    font-family: var(--font-en-body);
+  }
+
+  [data-en]{ }
+  body.lang-en [data-ar-only]{display:none !important;}
+  body:not(.lang-en) [data-en-only]{display:none !important;}
+
+  /* شريط زخرفي علوي رفيع بنمط النجمة الثمانية */
+  .pattern-strip{
+    height:10px;
+    width:100%;
+    background-image: repeating-linear-gradient(45deg, var(--gold) 0 6px, var(--green) 6px 12px);
+    opacity:0.55;
+  }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:22px 18px 60px;
+  }
+
+  /* ============ زر تبديل اللغة ============ */
+  .lang-toggle{
+    position:fixed;
+    top:16px;
+    inset-inline-start:16px;
+    z-index:60;
+    background:var(--green-deep);
+    color:var(--gold-light);
+    border:1px solid var(--gold);
+    border-radius:999px;
+    padding:9px 18px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition: transform .25s ease, background .25s ease;
+  }
+  .lang-toggle:hover{ transform:translateY(-2px); background:var(--green); }
+  .lang-toggle:focus-visible{ outline:3px solid var(--gold-glow); outline-offset:2px; }
+
+  /* ============ الهيدر ============ */
+  header.hero{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    align-items:stretch;
+    background: linear-gradient(160deg, var(--green-deep), var(--green) 65%, var(--green-mid));
+    border-radius: var(--radius-lg);
+    padding: 28px 26px;
+    box-shadow: var(--shadow);
+    position:relative;
+    overflow:hidden;
+    margin-top:14px;
+  }
+  header.hero::before{
+    /* قوس محراب زخرفي خافت في الخلفية */
+    content:"";
+    position:absolute;
+    inset-inline-end:-60px;
+    top:-40px;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(234,217,160,0.22), transparent 70%);
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:14px;
+    background-image: repeating-linear-gradient(45deg, rgba(201,162,75,0.55) 0 6px, transparent 6px 12px);
+  }
+
+  .hero-titles{
+    flex:1 1 320px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:10px;
+    z-index:2;
+  }
+  .hero-titles h1{
+    margin:0;
+    color:var(--gold-light);
+    font-family: var(--font-ar-display);
+    font-size: clamp(22px, 3.2vw, 34px);
+    line-height:1.4;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  body.lang-en .hero-titles h1{ font-family: var(--font-en-display); }
+  .hero-titles .audience{
+    color:var(--green-soft);
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .hero-titles .audience b{ color:var(--gold-light); font-weight:bold; }
+
+  .hero-badges{
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:flex-end;
+    z-index:2;
+  }
+  .badge-card{
+    background: rgba(255,255,255,0.94);
+    color: var(--green-deep);
+    border-radius: var(--radius-sm);
+    padding:10px 14px;
+    font-size:14px;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border:1px solid var(--gold-light);
+    animation: floaty 4.5s ease-in-out infinite;
+  }
+  .badge-card:nth-child(2){ animation-delay:.4s; }
+  .badge-card:nth-child(3){ animation-delay:.8s; }
+  @keyframes floaty{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-5px); }
+  }
+
+  /* ============ بطاقة اسم الطالب ============ */
+  .name-card{
+    margin-top:20px;
+    background:var(--white);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+    padding:24px;
+    border:1px solid var(--gold-light);
+    text-align:center;
+  }
+  .name-card h2{
+    margin:0 0 14px;
+    color:var(--green-deep);
+    font-size:22px;
+  }
+  .name-card input{
+    width:100%;
+    max-width:420px;
+    padding:14px 18px;
+    font-size:18px;
+    border-radius:999px;
+    border:2px solid var(--green-mid);
+    text-align:center;
+    outline:none;
+    font-family:inherit;
+    color:var(--ink);
+    background:var(--cream);
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .name-card input:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 4px var(--gold-glow);
+  }
+  .welcome-msg{
+    margin-top:16px;
+    font-size:19px;
+    font-weight:bold;
+    color:var(--green);
+    min-height:28px;
+    opacity:0;
+    transform:translateY(6px);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .welcome-msg.show{ opacity:1; transform:translateY(0); }
+
+  /* ============ قسم المعلمة ============ */
+  .teacher-card{
+    margin-top:20px;
+    background: linear-gradient(180deg, var(--white), var(--green-soft));
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+    padding:26px;
+    border:1px solid var(--gold-light);
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
+  }
+  .teacher-avatar{
+    flex:0 0 auto;
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background: linear-gradient(160deg,#3A7A5A,#1F5C42);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: inset 0 0 0 4px var(--gold-light), 0 6px 16px rgba(0,0,0,0.15);
+  }
+  .teacher-info{ flex:1 1 220px; }
+  .teacher-info h3{ margin:0 0 4px; color:var(--green-deep); font-size:19px; }
+  .teacher-info .role{ color:var(--ink-soft); font-size:14px; margin-bottom:10px; }
+  .teacher-welcome{
+    display:inline-block;
+    color:var(--green);
+    font-weight:bold;
+    font-size:16px;
+    animation: gentle-sway 3.2s ease-in-out infinite;
+  }
+  @keyframes gentle-sway{
+    0%,100%{ transform: rotate(0deg); }
+    50%{ transform: rotate(1.2deg); }
+  }
+  .motivate-strip{
+    flex:1 1 100%;
+    margin-top:6px;
+    background: var(--gold-glow);
+    border-inline-start:5px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding:12px 16px;
+    font-size:15px;
+    color:var(--green-deep);
+    font-weight:bold;
+  }
+
+  /* ============ عناوين الأقسام ============ */
+  .section-title{
+    margin: 34px 0 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--green-deep);
+    font-size:20px;
+    font-weight:bold;
+  }
+  .section-title::after{
+    content:"";
+    flex:1;
+    height:2px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0 8px, transparent 8px 16px);
+  }
+
+  /* ============ البطاقات التعليمية Flip Cards ============ */
+  .cards-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+    gap:16px;
+  }
+  .flip-card{
+    perspective:1200px;
+    height:200px;
+    cursor:pointer;
+  }
+  .flip-inner{
+    position:relative;
+    width:100%; height:100%;
+    transition: transform .6s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{ transform: rotateY(180deg); }
+  .flip-face{
+    position:absolute; inset:0;
+    border-radius: var(--radius-md);
+    backface-visibility:hidden;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    box-shadow: var(--shadow);
+  }
+  .flip-front{
+    background: linear-gradient(160deg, var(--green), var(--green-deep));
+    color:var(--gold-light);
+    border:1px solid var(--gold);
+  }
+  .flip-front .q-icon{ font-size:30px; margin-bottom:8px; }
+  .flip-front p{ margin:0; font-weight:bold; font-size:16px; }
+  .flip-back{
+    background:var(--white);
+    color:var(--ink);
+    transform: rotateY(180deg);
+    border:1px solid var(--gold-light);
+    font-size:14px;
+    line-height:1.7;
+    overflow-y:auto;
+  }
+  .flip-hint{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  /* ============ قسم الحديث الشريف ============ */
+  .hadith-card{
+    background: linear-gradient(160deg, var(--green-deep), var(--green));
+    border-radius: var(--radius-lg);
+    padding:28px;
+    box-shadow:var(--shadow);
+    border:2px solid var(--gold);
+    text-align:center;
+    color:var(--gold-light);
+    cursor:pointer;
+    transition: padding .3s ease;
+    position:relative;
+  }
+  .hadith-card h3{ margin:0 0 14px; font-size:20px; }
+  .hadith-text{
+    font-family: var(--font-ar-display);
+    font-size:17px;
+    line-height:2;
+    color:var(--white);
+    transition: font-size .3s ease;
+  }
+  body.lang-en .hadith-text{ font-family: var(--font-en-display); font-style:italic; }
+  .hadith-card.enlarged .hadith-text{ font-size:23px; }
+  .hadith-tap-hint{
+    margin-top:12px;
+    font-size:12px;
+    color:var(--gold-light);
+    opacity:0.8;
+  }
+
+  /* ============ سؤال تفاعلي ============ */
+  .quiz-card{
+    background:var(--white);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+    padding:26px;
+    border:1px solid var(--gold-light);
+  }
+  .quiz-card h3{ margin:0 0 16px; color:var(--green-deep); font-size:19px; text-align:center; }
+  .quiz-options{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-width:560px;
+    margin:0 auto;
+  }
+  .quiz-option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    border-radius: var(--radius-sm);
+    border:2px solid var(--green-soft);
+    background: var(--cream);
+    cursor:pointer;
+    font-size:15px;
+    transition: border-color .2s ease, background .2s ease, transform .15s ease;
+  }
+  .quiz-option:hover{ border-color:var(--gold); transform: translateX(0); }
+  .quiz-option.correct{ background: var(--green-soft); border-color:var(--green); }
+  .quiz-option.wrong{ background:#FBE7E4; border-color:#C0554A; }
+  .quiz-option .dot{
+    width:16px; height:16px; border-radius:50%;
+    border:2px solid var(--green-mid);
+    flex:0 0 auto;
+  }
+  .quiz-feedback{
+    margin-top:16px;
+    text-align:center;
+    font-size:17px;
+    font-weight:bold;
+    min-height:26px;
+  }
+  .quiz-feedback.good{ color:var(--green); }
+  .quiz-feedback.bad{ color:#C0554A; }
+
+  /* ============ زر التشجيع ============ */
+  .finish-wrap{
+    text-align:center;
+    margin-top:38px;
+  }
+  .finish-btn{
+    background: linear-gradient(160deg, var(--gold), #B4863A);
+    color:var(--green-deep);
+    border:none;
+    padding:18px 40px;
+    font-size:19px;
+    font-weight:bold;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow: 0 8px 20px rgba(180,134,58,0.4);
+    transition: transform .2s ease, box-shadow .2s ease;
+    font-family:inherit;
+  }
+  .finish-btn:hover{ transform: translateY(-3px); box-shadow: 0 12px 24px rgba(180,134,58,0.5); }
+  .finish-btn:focus-visible{ outline:3px solid var(--green); outline-offset:3px; }
+
+  /* ============ نافذة التهنئة ============ */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background: rgba(18,53,36,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{
+    background:var(--white);
+    border-radius:var(--radius-lg);
+    padding:34px 30px;
+    max-width:420px;
+    width:100%;
+    text-align:center;
+    border:2px solid var(--gold);
+    box-shadow:0 20px 50px rgba(0,0,0,0.3);
+    animation: pop-in .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes pop-in{
+    from{ transform:scale(.7); opacity:0; }
+    to{ transform:scale(1); opacity:1; }
+  }
+  .modal-box h2{ color:var(--green-deep); margin:0 0 10px; font-size:22px; }
+  .modal-box p{ color:var(--ink-soft); margin:0 0 20px; font-size:15px; }
+  .modal-close{
+    background:var(--green);
+    color:var(--white);
+    border:none;
+    padding:10px 26px;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:15px;
+    font-family:inherit;
+  }
+
+  #confetti-canvas{
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:99;
+  }
+
+  footer{
+    text-align:center;
+    margin-top:40px;
+    color:var(--ink-soft);
+    font-size:13px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  @media (max-width:640px){
+    header.hero{ flex-direction:column; }
+    .hero-badges{ justify-content:flex-start; }
+    .lang-toggle{ font-size:12px; padding:7px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="pattern-strip"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<button class="lang-toggle" id="langToggle" aria-label="Switch language">
+  <span data-ar-only>EN</span>
+  <span data-en-only>AR</span>
+</button>
+
+<div class="wrap">
+
+  <!-- ============ الهيدر ============ -->
+  <header class="hero">
+    <div class="hero-titles">
+      <h1>
+        <span data-ar-only>وجوب تعلم القراءة الصحيحة للقرآن الكريم بالتجويد</span>
+        <span data-en-only>The Duty of Learning to Recite the Qur'an Correctly with Tajweed</span>
+      </h1>
+      <div class="audience">
+        📚 <span data-ar-only>الفئة المستهدفة: <b>أطفال المرحلة الابتدائية</b></span>
+        <span data-en-only>Audience: <b>Primary school children</b></span>
+      </div>
+    </div>
+    <div class="hero-badges">
+      <div class="badge-card">📖 <span data-ar-only>بالقرآن نحيا</span><span data-en-only>We live by the Qur'an</span></div>
+      <div class="badge-card">🌿 <span data-ar-only>نتعلم لنعمل</span><span data-en-only>We learn to act</span></div>
+      <div class="badge-card">⭐ <span data-ar-only>أنا طالب مجتهد</span><span data-en-only>I am a diligent student</span></div>
+    </div>
+  </header>
+
+  <!-- ============ بطاقة اسم الطالب ============ -->
+  <section class="name-card">
+    <h2>✍️ <span data-ar-only>حامل القرآن</span><span data-en-only>Bearer of the Qur'an</span></h2>
+    <input type="text" id="studentName"
+      placeholder="إسم الطالب..."
+      data-ph-ar="إسم الطالب..." data-ph-en="Student's name...">
+    <div class="welcome-msg" id="welcomeMsg"></div>
+  </section>
+
+  <!-- ============ قسم المعلمة ============ -->
+  <section class="teacher-card">
+    <div class="teacher-avatar" aria-hidden="true">
+      <svg width="72" height="72" viewBox="0 0 100 100">
+        <path d="M50 8 C24 8 14 30 14 46 C14 68 30 92 50 92 C70 92 86 68 86 46 C86 30 76 8 50 8 Z" fill="#EAD9A0"/>
+        <circle cx="50" cy="52" r="24" fill="#F3D9B1"/>
+        <path d="M26 46 C26 26 74 26 74 46 C74 34 62 26 50 26 C38 26 26 34 26 46 Z" fill="#C9A24B"/>
+        <circle cx="41" cy="54" r="3" fill="#3A2A1A"/>
+        <circle cx="59" cy="54" r="3" fill="#3A2A1A"/>
+        <path d="M42 64 Q50 70 58 64" stroke="#3A2A1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="teacher-info">
+      <h3><span data-ar-only>المعلمة أمل الحسن</span><span data-en-only>Teacher Amal Al-Hassan</span></h3>
+      <div class="role"><span data-ar-only>مرجعك الأكيد</span><span data-en-only>Your trusted guide</span></div>
+      <div class="teacher-welcome">
+        <span data-ar-only>مرحباً بكم طلابي الأذكياء 🌸</span>
+        <span data-en-only>Welcome, my clever students 🌸</span>
+      </div>
+    </div>
+    <div class="motivate-strip">
+      <span data-ar-only>أنا الطالب المسلم، أحب القرآن وأتعلم تلاوته الصحيحة.</span>
+      <span data-en-only>I am a Muslim student — I love the Qur'an and I learn to recite it correctly.</span>
+    </div>
+  </section>
+
+  <!-- ============ البطاقات التعليمية ============ -->
+  <div class="section-title">🌿 <span data-ar-only>لنتعلم معاً</span><span data-en-only>Let's Learn Together</span></div>
+  <div class="cards-grid" id="cardsGrid"></div>
+
+  <!-- ============ قسم الحديث ============ -->
+  <div class="section-title">🌸 <span data-ar-only>بشارة نبوية</span><span data-en-only>A Prophetic Glad Tiding</span></div>
+  <div class="hadith-card" id="hadithCard" tabindex="0" role="button">
+    <h3>🌸 <span data-ar-only>بشارة من النبي ﷺ</span><span data-en-only>Glad tidings from the Prophet ﷺ</span></h3>
+    <p class="hadith-text">
+      <span data-ar-only>«الذي يقرأ القرآن وهو ماهر به مع السَّفَرَةِ الكرام البَرَرَة، والذي يقرأ القرآن ويَتَتَعْتَعُ فيه وهو عليه شاقٌّ له أجران»</span>
+      <span data-en-only>"The one who is skilled in reciting the Qur'an is with the noble, righteous scribes (angels), and the one who recites it with difficulty, struggling through it, will have a double reward."</span>
+    </p>
+    <div class="hadith-tap-hint">
+      <span data-ar-only>👆 اضغط لتكبير الخط</span>
+      <span data-en-only>👆 Tap to enlarge the text</span>
+    </div>
+  </div>
+
+  <!-- ============ سؤال تفاعلي ============ -->
+  <div class="section-title">⭐ <span data-ar-only>اختبر نفسك</span><span data-en-only>Test Yourself</span></div>
+  <div class="quiz-card">
+    <h3><span data-ar-only>ما الهدف من تعلم التجويد؟</span><span data-en-only>What is the goal of learning Tajweed?</span></h3>
+    <div class="quiz-options" id="quizOptions">
+      <div class="quiz-option" data-correct="true">
+        <span class="dot"></span>
+        <span data-ar-only>حتى أقرأ القرآن كما أنزله الله.</span>
+        <span data-en-only>So that I recite the Qur'an as Allah revealed it.</span>
+      </div>
+      <div class="quiz-option" data-correct="false">
+        <span class="dot"></span>
+        <span data-ar-only>حتى أسرع في القراءة.</span>
+        <span data-en-only>So that I read faster.</span>
+      </div>
+      <div class="quiz-option" data-correct="false">
+        <span class="dot"></span>
+        <span data-ar-only>حتى تكون التلاوة خاطئة.</span>
+        <span data-en-only>So that the recitation becomes incorrect.</span>
+      </div>
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+  </div>
+
+  <!-- ============ زر التشجيع ============ -->
+  <div class="finish-wrap">
+    <button class="finish-btn" id="finishBtn">
+      🌟 <span data-ar-only>أنهيت الدرس</span><span data-en-only>I Finished the Lesson</span>
+    </button>
+  </div>
+
+  <footer>
+    <span data-ar-only>صمم بحب لطلاب القرآن الكريم 🌙</span>
+    <span data-en-only>Designed with love for students of the Qur'an 🌙</span>
+  </footer>
+</div>
+
+<!-- ============ نافذة التهنئة ============ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h2><span data-ar-only>بارك الله فيك 🌹</span><span data-en-only>May Allah bless you 🌹</span></h2>
+    <p><span data-ar-only>استمر في تعلم كتاب الله.</span><span data-en-only>Keep learning the Book of Allah.</span></p>
+    <button class="modal-close" id="modalClose">
+      <span data-ar-only>إغلاق</span><span data-en-only>Close</span>
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ بيانات البطاقات التعليمية ============ */
+  var cardsData = [
+    {
+      q_ar: "ما هو التجويد؟",
+      q_en: "What is Tajweed?",
+      a_ar: "التجويد هو قراءة القرآن الكريم كما أنزله الله تعالى، بإعطاء كل حرف حقه من المخرج والصفة، حتى تكون التلاوة صحيحة وجميلة.",
+      a_en: "Tajweed is reciting the Qur'an as Allah revealed it, giving each letter its correct point of articulation and characteristics, so the recitation is correct and beautiful."
+    },
+    {
+      q_ar: "لماذا نتعلم التجويد؟",
+      q_en: "Why do we learn Tajweed?",
+      a_ar: "لأن الله أنزل القرآن ليُقرأ قراءة صحيحة. حتى ننطق الحروف كما نطقها النبي ﷺ. ولئلا نغيّر معاني كلام الله.",
+      a_en: "Because Allah revealed the Qur'an to be recited correctly, so we pronounce the letters as the Prophet ﷺ did, and so we never change the meaning of Allah's words."
+    },
+    {
+      q_ar: "هل يجب أن أتعلم التجويد؟",
+      q_en: "Must I learn Tajweed?",
+      a_ar: "نعم، يجب على المسلم أن يتعلم من التجويد ما يساعده على قراءة القرآن قراءة صحيحة، وأن يجتهد في تصحيح أخطائه.",
+      a_en: "Yes — every Muslim must learn enough Tajweed to recite the Qur'an correctly, and must strive to correct their mistakes."
+    },
+    {
+      q_ar: "ماذا لو أخطأت لأنني ما زلت أتعلم؟",
+      q_en: "What if I make mistakes because I'm still learning?",
+      a_ar: "لا تقلق. إذا كنت تتعلم وتجتهد فإن الله يثيبك. قال رسول الله ﷺ: الماهر بالقرآن مع السفرة الكرام البررة، والذي يقرأ ويتتعتع فيه له أجران.",
+      a_en: "Don't worry. If you are learning and trying your best, Allah rewards you. The Prophet ﷺ taught that the skilled reciter is with the noble angels, and the one who struggles still earns a double reward."
+    }
+  ];
+
+  var grid = document.getElementById('cardsGrid');
+  cardsData.forEach(function(c, i){
+    var card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML =
+      '<div class="flip-inner">' +
+        '<div class="flip-face flip-front">' +
+          '<div class="q-icon">🌟</div>' +
+          '<p data-ar-only>'+c.q_ar+'</p>' +
+          '<p data-en-only>'+c.q_en+'</p>' +
+          '<div class="flip-hint"><span data-ar-only>اضغط لعرض الإجابة</span><span data-en-only>Tap for the answer</span></div>' +
+        '</div>' +
+        '<div class="flip-face flip-back">' +
+          '<div>' +
+            '<span data-ar-only>'+c.a_ar+'</span>' +
+            '<span data-en-only>'+c.a_en+'</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    card.addEventListener('click', function(){
+      card.classList.toggle('flipped');
+    });
+    grid.appendChild(card);
+  });
+
+  /* ============ اسم الطالب ============ */
+  var nameInput = document.getElementById('studentName');
+  var welcomeMsg = document.getElementById('welcomeMsg');
+  function renderWelcome(){
+    var name = nameInput.value.trim();
+    if(!name){ welcomeMsg.classList.remove('show'); welcomeMsg.textContent=''; return; }
+    var isEn = document.body.classList.contains('lang-en');
+    welcomeMsg.textContent = isEn
+      ? ('Welcome, champion ' + name + ' 👋 Ready for the challenge?')
+      : ('أهلاً بك يا بطل الملايين ' + name + ' 👋 جاهز للتحدي؟');
+    welcomeMsg.classList.add('show');
+  }
+  nameInput.addEventListener('input', renderWelcome);
+
+  /* ============ الحديث - تكبير عند الضغط ============ */
+  var hadithCard = document.getElementById('hadithCard');
+  function toggleHadith(){ hadithCard.classList.toggle('enlarged'); }
+  hadithCard.addEventListener('click', toggleHadith);
+  hadithCard.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleHadith(); }
+  });
+
+  /* ============ السؤال التفاعلي ============ */
+  var quizOptions = document.querySelectorAll('.quiz-option');
+  var quizFeedback = document.getElementById('quizFeedback');
+  var answered = false;
+  quizOptions.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      if(answered) return;
+      var isEn = document.body.classList.contains('lang-en');
+      if(opt.dataset.correct === 'true'){
+        answered = true;
+        opt.classList.add('correct');
+        quizFeedback.className = 'quiz-feedback good';
+        quizFeedback.textContent = isEn ? '🎉 Well done!' : '🎉 أحسنت!';
+      } else {
+        opt.classList.add('wrong');
+        quizFeedback.className = 'quiz-feedback bad';
+        quizFeedback.textContent = isEn ? 'Try again.' : 'حاول مرة أخرى.';
+        setTimeout(function(){ opt.classList.remove('wrong'); }, 900);
+      }
+    });
+  });
+
+  /* ============ زر إنهاء الدرس + التهنئة + القصاصات ============ */
+  var finishBtn = document.getElementById('finishBtn');
+  var modalOverlay = document.getElementById('modalOverlay');
+  var modalClose = document.getElementById('modalClose');
+
+  finishBtn.addEventListener('click', function(){
+    modalOverlay.classList.add('open');
+    launchConfetti();
+  });
+  modalClose.addEventListener('click', function(){
+    modalOverlay.classList.remove('open');
+  });
+  modalOverlay.addEventListener('click', function(e){
+    if(e.target === modalOverlay) modalOverlay.classList.remove('open');
+  });
+
+  /* ============ Confetti بسيط بدون مكتبات ============ */
+  var canvas = document.getElementById('confetti-canvas');
+  var ctx = canvas.getContext('2d');
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  var confettiColors = ['#C9A24B','#1F5C42','#EAD9A0','#FBF7EE','#2F7D57'];
+  var particles = [];
+  var animId = null;
+
+  function launchConfetti(){
+    particles = [];
+    var count = 140;
+    for(var i=0; i<count; i++){
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.3,
+        w: 6 + Math.random() * 6,
+        h: 8 + Math.random() * 10,
+        color: confettiColors[Math.floor(Math.random()*confettiColors.length)],
+        speedY: 2 + Math.random() * 3,
+        speedX: (Math.random() - 0.5) * 2,
+        rot: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10
+      });
+    }
+    if(animId) cancelAnimationFrame(animId);
+    var start = Date.now();
+    function frame(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      var alive = false;
+      particles.forEach(function(p){
+        p.y += p.speedY;
+        p.x += p.speedX;
+        p.rot += p.rotSpeed;
+        if(p.y < canvas.height + 20) alive = true;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      if(alive && Date.now() - start < 4500){
+        animId = requestAnimationFrame(frame);
+      } else {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+    }
+    frame();
+  }
+
+  /* ============ تبديل اللغة ============ */
+  var langToggle = document.getElementById('langToggle');
+  langToggle.addEventListener('click', function(){
+    var isEn = document.body.classList.toggle('lang-en');
+    document.documentElement.lang = isEn ? 'en' : 'ar';
+    document.documentElement.dir = isEn ? 'ltr' : 'rtl';
+    nameInput.placeholder = isEn ? nameInput.dataset.phEn : nameInput.dataset.phAr;
+    renderWelcome();
+  });
+
+})();
+</script>
+
+</body>
+</html>
