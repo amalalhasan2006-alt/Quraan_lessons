@@ -161,6 +161,12 @@
   }
   .tajweed-row .lesson-cta{ color:var(--green-deep); }
 
+  .arabic-row .lesson-badge{
+    background: radial-gradient(circle at 35% 30%, var(--cream), var(--gold) 70%, #9A7530 100%);
+    color:var(--green-deep); font-size:19px;
+  }
+  .arabic-row .lesson-cta{ color:var(--green-deep); }
+
   .teacher-strip{
     display:flex; align-items:center; gap:12px; justify-content:center;
     margin-top:26px; padding:14px 20px; background:var(--white); border-radius:999px;
@@ -220,6 +226,9 @@
         <span data-en-only>"Whoever reads the Qur'an and finds it hard to recite will have a double reward."</span>
       </p>
     </div>
+    <div class="nav-panel">
+      <button class="quick-nav-btn" id="arabicToggle" aria-expanded="false" aria-controls="arabicSection">🔤 <span data-ar-only>العربية</span><span data-en-only>Arabic</span></button>
+    </div>
   </nav>
 
   <div class="lesson-panel" id="quranSection">
@@ -232,6 +241,12 @@
     <div class="section-title">🎙️ <span data-ar-only>دروس التجويد</span><span data-en-only>Tajweed Lessons</span></div>
     <p class="section-sub"><span data-ar-only>تعلّم قواعد تلاوة القرآن الكريم بشكل صحيح</span><span data-en-only>Learn the rules of reciting the Qur'an correctly</span></p>
     <div class="lesson-list" id="tajweedList"></div>
+  </div>
+
+  <div class="lesson-panel" id="arabicSection">
+    <div class="section-title">🔤 <span data-ar-only>دروس اللغة العربية</span><span data-en-only>Arabic Language Lessons</span></div>
+    <p class="section-sub"><span data-ar-only>تمارين لتقوية اللغة العربية</span><span data-en-only>Exercises to strengthen Arabic language skills</span></p>
+    <div class="lesson-list" id="arabicList"></div>
   </div>
 
   <div class="teacher-strip">
@@ -276,12 +291,17 @@
     { icon:"🎙️", file:"لماذا نتعلم التجويد 1.html", nameAr:"لماذا نتعلم التجويد؟ (١)", nameEn:"Why Do We Learn Tajweed? (1)" }
   ];
 
-  function buildRow(container, item, isTajweed){
+  var arabic = [
+    { icon:"🔤", file:"تمارين أحب العربي 1إلى6.html", nameAr:"تمارين أحب العربي (١ - ٦)", nameEn:"'I Love Arabic' Exercises (1-6)" }
+  ];
+
+  function buildRow(container, item, kind){
     var a = document.createElement('a');
-    a.className = 'lesson-row' + (isTajweed ? ' tajweed-row' : '');
+    var extraClass = kind === 'tajweed' ? ' tajweed-row' : (kind === 'arabic' ? ' arabic-row' : '');
+    a.className = 'lesson-row' + extraClass;
     a.href = encodeURI(item.file);
     a.innerHTML =
-      '<div class="lesson-badge">' + (isTajweed ? item.icon : item.num) + '</div>' +
+      '<div class="lesson-badge">' + (kind ? item.icon : item.num) + '</div>' +
       '<div class="lesson-names">' +
         '<span class="name-ar" data-ar-only>' + item.nameAr + '</span>' +
         '<span class="name-en" data-ar-only>' + item.nameEn + '</span>' +
@@ -299,31 +319,34 @@
   surahs.forEach(function(s){ buildRow(quranList, s, false); });
 
   var tajweedList = document.getElementById('tajweedList');
-  tajweed.forEach(function(t){ buildRow(tajweedList, t, true); });
+  tajweed.forEach(function(t){ buildRow(tajweedList, t, 'tajweed'); });
 
-  var quranToggle = document.getElementById('quranToggle');
-  var tajweedToggle = document.getElementById('tajweedToggle');
-  var quranSection = document.getElementById('quranSection');
-  var tajweedSection = document.getElementById('tajweedSection');
+  var arabicList = document.getElementById('arabicList');
+  arabic.forEach(function(t){ buildRow(arabicList, t, 'arabic'); });
 
-  function togglePanel(btn, panel, otherBtn, otherPanel){
-    var isOpen = panel.classList.contains('open');
-    otherPanel.classList.remove('open');
-    otherBtn.classList.remove('active');
-    otherBtn.setAttribute('aria-expanded','false');
-    if(isOpen){
-      panel.classList.remove('open');
-      btn.classList.remove('active');
-      btn.setAttribute('aria-expanded','false');
-    } else {
-      panel.classList.add('open');
-      btn.classList.add('active');
-      btn.setAttribute('aria-expanded','true');
-      panel.scrollIntoView({ behavior:'smooth', block:'start' });
+  var panels = [
+    { btn: document.getElementById('quranToggle'), panel: document.getElementById('quranSection') },
+    { btn: document.getElementById('tajweedToggle'), panel: document.getElementById('tajweedSection') },
+    { btn: document.getElementById('arabicToggle'), panel: document.getElementById('arabicSection') }
+  ];
+
+  function togglePanel(entry){
+    var isOpen = entry.panel.classList.contains('open');
+    panels.forEach(function(p){
+      p.panel.classList.remove('open');
+      p.btn.classList.remove('active');
+      p.btn.setAttribute('aria-expanded','false');
+    });
+    if(!isOpen){
+      entry.panel.classList.add('open');
+      entry.btn.classList.add('active');
+      entry.btn.setAttribute('aria-expanded','true');
+      entry.panel.scrollIntoView({ behavior:'smooth', block:'start' });
     }
   }
-  quranToggle.addEventListener('click', function(){ togglePanel(quranToggle, quranSection, tajweedToggle, tajweedSection); });
-  tajweedToggle.addEventListener('click', function(){ togglePanel(tajweedToggle, tajweedSection, quranToggle, quranSection); });
+  panels.forEach(function(entry){
+    entry.btn.addEventListener('click', function(){ togglePanel(entry); });
+  });
 
   var btnAr = document.getElementById('btnAr');
   var btnEn = document.getElementById('btnEn');
