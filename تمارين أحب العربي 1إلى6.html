@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تَعَلُّمُ اللُّغَةِ العَرَبِيَّةِ — المُسْتَوَى الأَوَّلُ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#F6EEDA; --parchment-dark:#EADFC2;
+  --emerald:#0E4F45; --emerald-deep:#0A3A33;
+  --gold:#C89B3C; --gold-light:#E7C877;
+  --ink:#22302A; --pomegranate:#A13B3B; --sky:#2E6E86;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--parchment);color:var(--ink);font-family:'Tajawal',sans-serif;}
+.zellige{height:12px;width:100%;
+  background:
+    linear-gradient(135deg, var(--gold) 25%, transparent 25%) -7px 0/14px 14px,
+    linear-gradient(225deg, var(--gold) 25%, transparent 25%) -7px 0/14px 14px,
+    linear-gradient(315deg, var(--gold) 25%, transparent 25%) 0 0/14px 14px,
+    linear-gradient(45deg, var(--gold) 25%, var(--emerald) 25%) 0 0/14px 14px;
+}
+header{background:linear-gradient(180deg,var(--emerald) 0%,var(--emerald-deep) 100%);color:var(--parchment);text-align:center;padding:32px 16px 38px;}
+header h1{font-family:'Amiri',serif;font-size:2.1rem;margin:0 0 6px;color:var(--gold-light);}
+header p{margin:0;opacity:.85;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:16px;background:var(--parchment-dark);position:sticky;top:0;z-index:5;}
+nav a{font-size:.85rem;font-weight:700;color:var(--emerald-deep);text-decoration:none;background:#fffdf7;border:1px solid var(--gold);padding:6px 12px;border-radius:20px;}
+nav a:hover{background:var(--gold-light);}
+main{max-width:760px;margin:0 auto;padding:26px 16px 60px;}
+.tracker-label{text-align:center;font-size:.8rem;color:var(--emerald-deep);opacity:.75;margin-bottom:8px;}
+.tracker{display:flex;justify-content:center;gap:8px;padding-bottom:18px;flex-wrap:wrap;}
+.tile{width:28px;height:28px;background:var(--parchment-dark);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  transition:background .3s,transform .3s;}
+.tile.lit{background:var(--gold);transform:scale(1.15) rotate(8deg);box-shadow:0 0 8px rgba(200,155,60,.7);}
+section.card{background:#fffdf7;border:1px solid var(--parchment-dark);border-radius:14px;padding:20px 20px 24px;margin-bottom:26px;box-shadow:0 6px 16px rgba(14,79,69,.06);position:relative;scroll-margin-top:70px;}
+section.card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:repeating-linear-gradient(90deg,var(--gold) 0 10px,var(--emerald) 10px 20px);}
+.eyebrow{font-weight:900;color:var(--sky);font-size:.8rem;letter-spacing:1px;margin-bottom:2px;}
+h2{font-family:'Amiri',serif;color:var(--emerald);font-size:1.35rem;margin:0 0 14px;}
+.item{border-top:1px dashed var(--parchment-dark);padding:14px 0;}
+.item:first-of-type{border-top:none;padding-top:0;}
+.arabic{font-family:'Amiri',serif;font-size:1.3rem;line-height:2;}
+.chip-bank,.chip-answer{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:8px;border-radius:10px;}
+.chip-bank{background:var(--parchment);}
+.chip-answer{background:#fff;border:1.5px dashed var(--gold);}
+.chip{font-family:'Amiri',serif;font-size:1.15rem;background:#fffdf7;border:1.5px solid var(--emerald);color:var(--emerald-deep);padding:6px 14px;border-radius:8px;cursor:pointer;}
+.chip:hover{background:var(--gold-light);}
+.chip.used{opacity:.35;pointer-events:none;}
+label.option{display:flex;align-items:center;gap:10px;background:var(--parchment);border:1.5px solid var(--parchment-dark);border-radius:10px;padding:9px 14px;margin-bottom:8px;font-family:'Amiri',serif;font-size:1.15rem;cursor:pointer;}
+label.option:hover{border-color:var(--gold);}
+input[type="radio"]{accent-color:var(--emerald);width:17px;height:17px;}
+input[type="text"],select,textarea{font-family:'Amiri',serif;font-size:1.1rem;padding:9px 11px;border:1.5px solid var(--parchment-dark);border-radius:8px;background:#fff;}
+input[type="text"]{width:200px;}
+textarea{width:100%;min-height:60px;resize:vertical;}
+select{cursor:pointer;}
+input:focus,select:focus,textarea:focus{outline:3px solid var(--sky);outline-offset:2px;}
+button.check{background:var(--emerald);color:var(--parchment);border:none;padding:9px 20px;border-radius:8px;font-weight:700;font-size:.95rem;cursor:pointer;margin-top:8px;}
+button.check:hover{background:var(--emerald-deep);}
+button.mini{background:none;border:1px solid var(--pomegranate);color:var(--pomegranate);padding:5px 12px;border-radius:8px;font-size:.85rem;cursor:pointer;margin-top:8px;margin-inline-start:8px;}
+.feedback{margin-top:8px;font-weight:700;min-height:1.2em;font-size:.95rem;}
+.feedback.good{color:var(--emerald);}
+.feedback.bad{color:var(--pomegranate);}
+.hint{font-size:.85rem;color:var(--sky);opacity:.8;margin-top:4px;}
+footer{text-align:center;padding:22px;color:var(--emerald-deep);opacity:.6;font-size:.8rem;}
+
+/* ---- stacked intro paragraphs ---- */
+.topic-title{font-family:'Amiri',serif;font-size:1.9rem;color:var(--gold-light);margin-bottom:14px;}
+.topic-level{font-weight:700;margin-bottom:22px;font-size:.95rem;}
+.topic-pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.pill{background:#fffdf7;color:var(--emerald-deep);border-radius:24px;padding:9px 16px;font-weight:700;font-size:.88rem;}
+.teacher-section,.name-section{max-width:520px;margin:0 auto;text-align:center;padding:32px 20px;}
+.teacher-section{border-bottom:1px dashed var(--parchment-dark);}
+.teacher-avatar{width:110px;height:110px;border-radius:50%;background:var(--emerald);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:4px solid var(--gold-light);}
+.teacher-avatar-inner{width:76px;height:76px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:2rem;}
+.teacher-name{font-family:'Amiri',serif;font-size:1.4rem;color:var(--emerald-deep);margin:4px 0 2px;}
+.teacher-tag{color:var(--sky);font-weight:700;margin-bottom:12px;font-size:.9rem;}
+.teacher-line{font-family:'Amiri',serif;font-size:1.15rem;color:var(--emerald-deep);}
+.intro-icon{font-size:2rem;margin-bottom:8px;}
+.name-title{font-family:'Amiri',serif;font-size:1.5rem;color:var(--emerald-deep);margin-bottom:20px;}
+.name-input{width:100%;max-width:320px;border:2px solid var(--emerald);border-radius:40px;padding:15px 20px;font-family:'Amiri',serif;font-size:1.15rem;text-align:center;background:#fffdf7;}
+.name-input:focus{outline:3px solid var(--sky);outline-offset:2px;}
+.intro-btn{margin-top:18px;background:var(--emerald);color:var(--parchment);border:none;padding:12px 30px;border-radius:30px;font-weight:700;font-size:1rem;cursor:pointer;font-family:'Tajawal',sans-serif;}
+.intro-btn:hover{background:var(--emerald-deep);}
+</style>
+</head>
+<body>
+
+<div class="zellige"></div>
+<header>
+  <div class="topic-title">تَعَلُّمُ اللُّغَةِ العَرَبِيَّةِ</div>
+  <div class="topic-level">📚 الفئة المستهدفة: المستوى الأول</div>
+  <div class="topic-pills">
+    <span class="pill">🌸 أُحِبُّ العَرَبِيَّةَ</span>
+    <span class="pill">📖 بِالعَرَبِيَّةِ أَفْتَخِرُ</span>
+    <span class="pill">⭐ أَنَا طَالِبٌ مُجْتَهِدٌ</span>
+  </div>
+</header>
+
+<section class="teacher-section">
+  <div class="teacher-avatar"><div class="teacher-avatar-inner">🧕</div></div>
+  <div class="teacher-name">المعلمة أمل الحسن</div>
+  <div class="teacher-tag">مرجعك الأكيد</div>
+  <p class="teacher-line">🌸 هيا بنا نتعلم العربية معًا</p>
+</section>
+
+<section class="name-section">
+  <div class="intro-icon">✍️</div>
+  <div class="name-title">مُتَعَلِّمُ العَرَبِيَّةِ الصَّغِيرُ</div>
+  <input type="text" id="studentName" class="name-input" placeholder="إِسْمُ الطَّالِبِ...">
+  <br><button class="intro-btn" onclick="startLesson()">لِنَبْدَأِ التَّمَارِينَ ✨</button>
+</section>
+
+<div class="zellige"></div>
+
+<nav>
+  <a href="#s1">١ تَرْتِيبٌ</a>
+  <a href="#s2">٢ إِكْمَالٌ</a>
+  <a href="#s3">٣ اِخْتِيَارٌ</a>
+  <a href="#s4">٤ تَوْصِيلٌ</a>
+  <a href="#s5">٥ كِتَابَةٌ</a>
+  <a href="#s6">٦ إِنْشَاءٌ</a>
+</nav>
+
+<main>
+  <div class="tracker-label">تَقَدُّمُكَ فِي الدَّرْسِ</div>
+  <div class="tracker" id="tracker">
+    <div class="tile" data-t="1"></div><div class="tile" data-t="2"></div>
+    <div class="tile" data-t="3"></div><div class="tile" data-t="4"></div>
+    <div class="tile" data-t="5"></div><div class="tile" data-t="6"></div>
+  </div>
+
+  <section class="card" id="s1">
+    <div class="eyebrow">تَمْرِينٌ ١</div>
+    <h2>رَتِّبِ الكَلِمَاتِ لِتُكَوِّنَ جُمْلَةً</h2>
+    <div id="orderWrap"></div>
+  </section>
+
+  <section class="card" id="s2">
+    <div class="eyebrow">تَمْرِينٌ ٢</div>
+    <h2>أَكْمِلِ الفَرَاغَ</h2>
+    <div id="fillWrap"></div>
+  </section>
+
+  <section class="card" id="s3">
+    <div class="eyebrow">تَمْرِينٌ ٣</div>
+    <h2>اِخْتَرِ الإِجَابَةَ الصَّحِيحَةَ</h2>
+    <div id="mcqWrap"></div>
+  </section>
+
+  <section class="card" id="s4">
+    <div class="eyebrow">تَمْرِينٌ ٤</div>
+    <h2>صِلْ كُلَّ كَلِمَةٍ بِمَا يُنَاسِبُهَا</h2>
+    <div id="matchWrap"></div>
+    <button class="check" onclick="checkMatch()">تَحَقَّقْ مِنَ التَّوْصِيلِ كُلِّهِ</button>
+    <div id="matchFeedback" class="feedback"></div>
+  </section>
+
+  <section class="card" id="s5">
+    <div class="eyebrow">تَمْرِينٌ ٥</div>
+    <h2>اُكْتُبِ الجُمْلَةَ كَمَا تَرَاهَا</h2>
+    <div id="writeWrap"></div>
+  </section>
+
+  <section class="card" id="s6">
+    <div class="eyebrow">تَمْرِينٌ ٦</div>
+    <h2>أَنْشِئْ جُمْلَتَكَ الخَاصَّةَ</h2>
+    <div id="createWrap"></div>
+  </section>
+</main>
+
+<footer>فُصْحَى زون — أَتَعَلَّمُ لُغَتِي بِمُتْعَةٍ</footer>
+
+<script>
+/* ---------- start button ---------- */
+function startLesson(){
+  const name=document.getElementById('studentName').value.trim();
+  const nameSection=document.querySelector('.name-section');
+  if(name && !nameSection.querySelector('.welcome-msg')){
+    nameSection.insertAdjacentHTML('beforeend', `<p class="welcome-msg" style="color:var(--emerald);font-weight:700;margin-top:14px;">أَهْلاً بِكَ يَا ${name}! 🌟</p>`);
+  }
+  document.querySelector('nav').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---------- helpers ---------- */
+function normalize(s){
+  return s.trim()
+    .replace(/[\u064B-\u0652\u0670]/g,'')   // strip tashkeel
+    .replace(/[إأآ]/g,'ا')
+    .replace(/ى/g,'ي')
+    .replace(/ة/g,'ه')
+    .replace(/\s+/g,' ')
+    .replace(/[.,،؟?!]/g,'')
+    .trim();
+}
+function lightTile(n){
+  const t=document.querySelector('.tile[data-t="'+n+'"]');
+  if(t) t.classList.add('lit');
+}
+
+/* ---------- 1. word ordering (click-to-build) ---------- */
+const orderData=[
+  {words:["هُوَ","يَكْنُسُ","الأَرْضَ"], answer:"هو يكنس الارض"},
+  {words:["أَنَا","فِي","المَدْرَسَةِ"], answer:"انا في المدرسه"},
+  {words:["البِنْتُ","تَأْكُلُ","الكَعْكَ"], answer:"البنت تاكل الكعك"},
+  {words:["أَشُمُّ","الوَرْدَ","بِأَنْفِي"], answer:"اشم الورد بانفي"}
+];
+const orderWrap=document.getElementById('orderWrap');
+orderData.forEach((item,i)=>{
+  const shuffled=[...item.words].sort(()=>Math.random()-0.5);
+  const div=document.createElement('div');
+  div.className='item';
+  div.innerHTML=`
+    <div class="chip-bank" id="bank${i}"></div>
+    <div class="chip-answer" id="ans${i}"></div>
+    <button class="check" onclick="checkOrder(${i})">تَحَقَّقْ</button>
+    <button class="mini" onclick="resetOrder(${i})">إِعَادَةٌ</button>
+    <div class="feedback" id="orderFb${i}"></div>`;
+  orderWrap.appendChild(div);
+  const bank=div.querySelector(`#bank${i}`);
+  const ans=div.querySelector(`#ans${i}`);
+  shuffled.forEach(w=>{
+    const chip=document.createElement('span');
+    chip.className='chip'; chip.textContent=w;
+    chip.onclick=()=>{ chip.classList.add('used'); const c2=chip.cloneNode(true); c2.className='chip'; c2.onclick=()=>{c2.remove();}; ans.appendChild(c2); };
+    bank.appendChild(chip);
+  });
+});
+function checkOrder(i){
+  const ans=document.getElementById(`ans${i}`);
+  const built=[...ans.children].map(c=>c.textContent).join(' ');
+  const fb=document.getElementById(`orderFb${i}`);
+  if(normalize(built)===orderData[i].answer && built.length>0){
+    fb.className='feedback good'; fb.innerText='أَحْسَنْتَ! تَرْتِيبٌ صَحِيحٌ. 🌟';
+    if([...document.querySelectorAll('#orderWrap .feedback')].every(f=>f.classList.contains('good'))) lightTile(1);
+  } else {
+    fb.className='feedback bad'; fb.innerText='لَيْسَ صَحِيحاً بَعْدُ — حَاوِلْ مَرَّةً أُخْرَى.';
+  }
+}
+function resetOrder(i){
+  const div=orderWrap.children[i];
+  div.querySelector(`#ans${i}`).innerHTML='';
+  div.querySelectorAll(`#bank${i} .chip`).forEach(c=>c.classList.remove('used'));
+  document.getElementById(`orderFb${i}`).innerText='';
+}
+
+/* ---------- 2. fill in the blank ---------- */
+const fillData=[
+  {q:"أَسْمَعُ القُرْآنَ بِـ ....... .", a:["اذني","بأذني","اذن"]},
+  {q:"أَرَى الحَدِيقَةَ بِـ ....... .", a:["عيني","بعيني"]},
+  {q:"أَتَذَوَّقُ الطَّعَامَ بِـ ....... .", a:["لساني","بلساني"]},
+  {q:"المَاءُ فِي الـ ....... .", a:["كاس","الكاس"]},
+  {q:"السِّكِّينُ فِي الـ ....... .", a:["مطبخ","المطبخ"]}
+];
+const fillWrap=document.getElementById('fillWrap');
+fillData.forEach((item,i)=>{
+  const div=document.createElement('div');
+  div.className='item';
+  div.innerHTML=`
+    <p class="arabic">${item.q}</p>
+    <input type="text" id="fillIn${i}" placeholder="اُكْتُبِ الكَلِمَةَ هُنَا">
+    <button class="check" onclick="checkFill(${i})">تَحَقَّقْ</button>
+    <div class="feedback" id="fillFb${i}"></div>`;
+  fillWrap.appendChild(div);
+});
+function checkFill(i){
+  const val=normalize(document.getElementById(`fillIn${i}`).value);
+  const fb=document.getElementById(`fillFb${i}`);
+  if(fillData[i].a.map(normalize).includes(val)){
+    fb.className='feedback good'; fb.innerText='مُمْتَازٌ! 🌟';
+    if([...document.querySelectorAll('#fillWrap .feedback')].every(f=>f.classList.contains('good'))) lightTile(2);
+  } else {
+    fb.className='feedback bad'; fb.innerText='حَاوِلْ مَرَّةً أُخْرَى.';
+  }
+}
+
+/* ---------- 3. multiple choice ---------- */
+const mcqData=[
+  {q:"أَيْنَ السِّكِّينُ؟", opts:["فِي الثَّلَّاجَةِ","فِي المَطْبَخِ","عَلَى الطَّاوِلَةِ"], c:1},
+  {q:"مَاذَا تَلْبَسُ هِيَ؟", opts:["الحِذَاءَ","المِعْطَفَ","الكُرَّاسَ"], c:1},
+  {q:"أَيْنَ الفُسْتَانُ؟", opts:["فِي الغَسَّالَةِ","فِي الحَمَّامِ","عَلَى السَّرِيرِ"], c:0},
+  {q:"مَاذَا تَغْسِلُ سَامِيَةُ؟", opts:["القَمِيصَ","الأَطْبَاقَ","السَّيَّارَةَ"], c:1},
+  {q:"أَيْنَ الحَلِيبُ؟", opts:["فِي الثَّلَّاجَةِ","فِي الخِزَانَةِ","عَلَى الكُرْسِيِّ"], c:0}
+];
+const mcqWrap=document.getElementById('mcqWrap');
+mcqData.forEach((item,i)=>{
+  const div=document.createElement('div');
+  div.className='item';
+  let optsHtml=item.opts.map((o,j)=>`<label class="option"><input type="radio" name="mcq${i}" value="${j}"> ${o}</label>`).join('');
+  div.innerHTML=`<p class="arabic">${item.q}</p>${optsHtml}
+    <button class="check" onclick="checkMcq(${i})">تَحَقَّقْ</button>
+    <div class="feedback" id="mcqFb${i}"></div>`;
+  mcqWrap.appendChild(div);
+});
+function checkMcq(i){
+  const sel=document.querySelector(`input[name="mcq${i}"]:checked`);
+  const fb=document.getElementById(`mcqFb${i}`);
+  if(!sel){ fb.className='feedback'; fb.innerText='اِخْتَرْ إِجَابَةً أَوَّلاً!'; return; }
+  if(parseInt(sel.value)===mcqData[i].c){
+    fb.className='feedback good'; fb.innerText='أَحْسَنْتَ! 🌟';
+    if([...document.querySelectorAll('#mcqWrap .feedback')].every(f=>f.classList.contains('good'))) lightTile(3);
+  } else {
+    fb.className='feedback bad'; fb.innerText='حَاوِلْ مَرَّةً أُخْرَى.';
+  }
+}
+
+/* ---------- 4. matching (dropdown-based) ---------- */
+const matchData=[
+  {left:"أَشُمُّ الوَرْدَ", right:"بِأَنْفِي"},
+  {left:"أَتَذَوَّقُ الطَّعَامَ", right:"بِلِسَانِي"},
+  {left:"أَسْمَعُ القُرْآنَ", right:"بِأُذُنِي"},
+  {left:"أَرَى الحَدِيقَةَ", right:"بِعَيْنِي"}
+];
+const matchWrap=document.getElementById('matchWrap');
+const rightOptions=matchData.map(m=>m.right);
+matchData.forEach((item,i)=>{
+  const div=document.createElement('div');
+  div.className='item';
+  let optsHtml=`<option value="">اِخْتَرْ...</option>`+rightOptions.map(r=>`<option value="${r}">${r}</option>`).join('');
+  div.innerHTML=`<span class="arabic">${item.left}</span> — <select id="match${i}">${optsHtml}</select>`;
+  matchWrap.appendChild(div);
+});
+function checkMatch(){
+  let allGood=true;
+  matchData.forEach((item,i)=>{
+    const sel=document.getElementById(`match${i}`);
+    if(sel.value!==item.right){ allGood=false; sel.style.borderColor='var(--pomegranate)'; }
+    else{ sel.style.borderColor='var(--emerald)'; }
+  });
+  const fb=document.getElementById('matchFeedback');
+  if(allGood){ fb.className='feedback good'; fb.innerText='رَائِعٌ! كُلُّ التَّوْصِيلَاتِ صَحِيحَةٌ. 🌟'; lightTile(4); }
+  else{ fb.className='feedback bad'; fb.innerText='بَعْضُ التَّوْصِيلَاتِ غَيْرُ صَحِيحَةٍ — حَاوِلْ مَرَّةً أُخْرَى.'; }
+}
+
+/* ---------- 5. guided writing (copy practice) ---------- */
+const writeData=[
+  "هَذِهِ ثِيَابِي.",
+  "أَيْنَ الجَوَارِبُ؟",
+  "هُوَ يَلْبَسُ الحِذَاءَ."
+];
+const writeWrap=document.getElementById('writeWrap');
+writeData.forEach((sentence,i)=>{
+  const div=document.createElement('div');
+  div.className='item';
+  div.innerHTML=`
+    <p class="arabic">${sentence}</p>
+    <p class="hint">اُنْظُرْ إِلَى الجُمْلَةِ ثُمَّ اُكْتُبْهَا بِنَفْسِكَ فِي الصُّنْدُوقِ:</p>
+    <textarea id="write${i}"></textarea>
+    <br><button class="check" onclick="checkWrite(${i}, '${sentence.replace(/'/g,"")}')">تَحَقَّقْ</button>
+    <div class="feedback" id="writeFb${i}"></div>`;
+  writeWrap.appendChild(div);
+});
+function checkWrite(i, original){
+  const val=normalize(document.getElementById(`write${i}`).value);
+  const fb=document.getElementById(`writeFb${i}`);
+  if(val===normalize(original) && val.length>0){
+    fb.className='feedback good'; fb.innerText='خَطٌّ جَمِيلٌ! كِتَابَةٌ صَحِيحَةٌ. 🌟';
+    if([...document.querySelectorAll('#writeWrap .feedback')].every(f=>f.classList.contains('good'))) lightTile(5);
+  } else {
+    fb.className='feedback bad'; fb.innerText='قَارِنْ كِتَابَتَكَ بِالجُمْلَةِ مَرَّةً أُخْرَى.';
+  }
+}
+
+/* ---------- 6. free sentence creation ---------- */
+const createData=[
+  {bank:"( أَنَا / هُوَ / هِيَ ) + ( أَغْسِلُ / يَغْسِلُ / تَغْسِلُ ) + ( وَجْهِي / يَدَهُ / سَيَّارَتِي )", example:"مِثَالٌ: هِيَ تَغْسِلُ يَدَهَا."},
+  {bank:"( عِنْدِي ) + شَيْءٌ فِي حَقِيبَتِكَ", example:"مِثَالٌ: عِنْدِي كِتَابٌ وَقَلَمٌ."},
+  {bank:"( أَيْنَ ) + شَيْءٌ فِي البَيْتِ", example:"مِثَالٌ: أَيْنَ المِنْشَفَةُ؟"}
+];
+const createWrap=document.getElementById('createWrap');
+createData.forEach((item,i)=>{
+  const div=document.createElement('div');
+  div.className='item';
+  div.innerHTML=`
+    <p class="hint">اِسْتَخْدِمْ: <span class="arabic" style="font-size:1.05rem;">${item.bank}</span></p>
+    <textarea id="create${i}" placeholder="اُكْتُبْ جُمْلَتَكَ هُنَا..."></textarea>
+    <br><button class="check" onclick="checkCreate(${i})">أَنْهَيْتُ!</button>
+    <div class="feedback" id="createFb${i}"></div>`;
+  createWrap.appendChild(div);
+});
+function checkCreate(i){
+  const val=document.getElementById(`create${i}`).value.trim();
+  const fb=document.getElementById(`createFb${i}`);
+  if(val.length>2){
+    fb.className='feedback good'; fb.innerText=`جُمْلَةٌ رَائِعَةٌ! ${createData[i].example} 🌟`;
+    if([...document.querySelectorAll('#createWrap .feedback')].every(f=>f.classList.contains('good'))) lightTile(6);
+  } else {
+    fb.className='feedback bad'; fb.innerText='اُكْتُبْ جُمْلَةً كَامِلَةً أَوَّلاً.';
+  }
+}
+</script>
+
+</body>
+</html>
